@@ -1,43 +1,72 @@
 /* global PI, webkitSpeechRecognition */
 
+/**
+ * Check PI with the SpeechRecognition HTML5 API
+ * @link https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html
+ * @link http://updates.html5rocks.com/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API
+ * @link http://www.sitepoint.com/introducing-web-speech-api/
+ */
+
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
 
 	// dom elements
 	var btn = document.querySelector('#btn'),
-		transcriptDiv = document.querySelector('#transcript');
+		finalSpan   = document.querySelector('#finalSpan'),
+		interimSpan = document.querySelector('#interimSpan');
 
 	// state
 	var speaking = false;
 
 	// start/stop speech recognition
 	btn.onclick = function () {
-		if (speaking) {
-			recognition.stop();
-			speaking = false;
-			btn.innerHTML = 'Click to start';
-		} else {
-			recognition.start();
-			speaking = true;
-			btn.innerHTML = 'Click to stop';
-			transcriptDiv.innerHTML = '';
-		}
+		speaking ? recognition.stop() : recognition.start();
 	};
 
 	// recognition and settings
-	var recognition        = new webkitSpeechRecognition();
-	recognition.continuous = true;
-	// recognition.interim    = true;
-	recognition.lang       = 'sl-SI';
+	var recognition            = new webkitSpeechRecognition();
+	recognition.continuous     = true;
+	recognition.interimResults = true;
+	recognition.lang           = 'sl-SI';
 
+	// var for final transcript
+	var finalTranscript   = '';
+
+	/**
+	 * Results
+	 * @param  {[type]} event [description]
+	 * @return {[type]}       [description]
+	 */
 	recognition.onresult = function(event) {
 		console.log(event);
+		var interimTranscript = '';
 
-		var transcript = removeAllButNumbers(event.results[0][0].transcript);
+		for (var i = event.resultIndex; i < event.results.length; ++i) {
+			if (event.results[i].isFinal) {
+				finalTranscript += event.results[i][0].transcript;
+			} else {
+				interimTranscript += event.results[i][0].transcript;
+			}
+		}
 
-		transcriptDiv.innerHTML = transcript;
+		finalTranscript = removeAllButNumbers(finalTranscript);
 
-		checkPiFromStart(transcript);
+		finalSpan.innerHTML   = finalTranscript;
+		interimSpan.innerHTML = interimTranscript;
+
+		checkPiFromStart(finalTranscript);
+	};
+
+	recognition.onstart = function () {
+		speaking        = true;
+		btn.innerHTML   = 'Click to stop';
+		finalTranscript = '';
+		document.body.style.backgroundColor = '';
+	};
+
+	recognition.onend = function () {
+		speaking      = false;
+		btn.innerHTML = 'Click to start';
 	};
 
 
