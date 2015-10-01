@@ -10,6 +10,12 @@
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
 
+	(function () {
+		if (!('webkitSpeechRecognition' in window)) {
+			document.body.innerHTML = 'This app is working only in Chrome Browser (version 25 and newer).';
+		}
+	}());
+
 	// dom elements
 	var btn = document.querySelector('#btn'),
 		finalSpan   = document.querySelector('#finalSpan'),
