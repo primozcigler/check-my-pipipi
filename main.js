@@ -1,3 +1,5 @@
+/* global PI, webkitSpeechRecognition */
+
 document.addEventListener('DOMContentLoaded', function () {
 	'use strict';
 
@@ -22,21 +24,40 @@ document.addEventListener('DOMContentLoaded', function () {
 		}
 	};
 
-	// recognition
-	var recognition = new webkitSpeechRecognition();
+	// recognition and settings
+	var recognition        = new webkitSpeechRecognition();
 	recognition.continuous = true;
-	recognition.lang = 'sl-SI';
+	// recognition.interim    = true;
+	recognition.lang       = 'sl-SI';
 
 	recognition.onresult = function(event) {
 		console.log(event);
 
-		transcriptDiv.innerHTML = removeWhiteSpace(event.results[0][0].transcript);
+		var transcript = removeAllButNumbers(event.results[0][0].transcript);
+
+		transcriptDiv.innerHTML = transcript;
+
+		checkPiFromStart(transcript);
 	};
 
 
 	// misc functions
-	var removeWhiteSpace = function (str) {
-		return str.replace(/\s/gm, '');
+
+	// remove all characters except numbers
+	var removeAllButNumbers = function (str) {
+		return str.replace(/\D/gm, '');
+	};
+
+	// check first N decimas of PI
+	var checkPiFromStart = function (input) {
+		var partialPi = PI.slice(0, input.length);
+
+		if ( partialPi === input ) {
+			document.body.style.backgroundColor = 'green';
+		}
+		else {
+			document.body.style.backgroundColor = 'red';
+		}
 	};
 
 });
