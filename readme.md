@@ -20,3 +20,4 @@ Overview
 - [ ] setting for action on error - do you want to continue or stop recognizing?
 - [ ] setting if you want to continue from the position when you made last mistake
 - [ ] stats: how many decimals you told correctly
+- [ ] remove /src/bower_components/ from repo when done
