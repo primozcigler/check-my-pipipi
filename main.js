@@ -66,21 +66,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		for (var i = event.resultIndex; i < event.results.length; ++i) {
 			if (event.results[i].isFinal) {
-				finalTranscript += event.results[i][0].transcript;
+				finalTranscript += checkPiFromPosition(settings.startCheckingAt, event.results[i][0].transcript);
 			} else {
 				interimTranscript += event.results[i][0].transcript;
 			}
 		}
 
-		finalTranscript = removeAllButNumbers(finalTranscript);
-
 		finalSpan.innerHTML   = finalTranscript;
 		interimSpan.innerHTML = interimTranscript;
-
-		// start checking if it is not empty
-		if (finalTranscript.length > 0) {
-			checkPiFromPosition(settings.startCheckingAt, finalTranscript);
-		}
 	};
 
 	// start recognition
@@ -113,31 +106,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// check first N decimas of PI
 	var checkPiFromPosition = function (pos, input) {
+		input = removeAllButNumbers(input);
+
 		var partialPi = PI.substr(pos, input.length),
 			isOK = partialPi === input;
 
-		finalSpan.classList.toggle('bg-success', isOK);
-
-		if (! isOK) {
-			var diff = JsDiff.diffChars(input, partialPi);
-
-			finalSpan.innerHTML = '';
+		if (isOK) {
+			return input;
+		} else {
+			var diff = JsDiff.diffChars(input, partialPi),
+				out = [];
 
 			diff.forEach(function(part){
 				// green for additions, red for deletions
 				// white for common parts
 				var color = part.added ? 'green' :
-					part.removed ? 'red' : '';
+					part.removed ? 'red' : false;
 				var span = document.createElement('span');
 
-				span.style.color = color;
+				if (color) {
+					out.push(  )
+				} else {
+
+				}
+
 				span.innerText   = part.value;
 
 				finalSpan.appendChild(span);
 			});
 		}
 
-		return isOK;
 	};
 
 });
