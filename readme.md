@@ -4,12 +4,12 @@ Overview
 ### 2 modes:
 
 1. PRO
+
    No visual feedback while speaking, error shown when you make a mistake.
-   ko se zmotis, te vprasa ce zelis nadaljevati od tam ali od zacetka in ko nadaljujes spet skrije cifre
 
 2. PRACTICE
-   practice mode: kot je zdaj, da so povedane cifre prikazane
-   opcija, da zacnes na poljubni decimalki
+
+   The numbers told are shown all the time.
 
 ### TODO
 
