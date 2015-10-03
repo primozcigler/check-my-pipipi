@@ -130,8 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
 				}
 			});
 
-			debugger;
-
 			return out.join('');
 		}
 
