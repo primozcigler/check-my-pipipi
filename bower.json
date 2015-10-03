@@ -1,0 +1,23 @@
+{
+  "name": "check-my-pipipi",
+  "version": "0.0.0",
+  "homepage": "https://github.com/primozcigler/check-my-pipipi",
+  "authors": [
+    "Primoz Cigler <primoz@proteusnet.com>"
+  ],
+  "description": "",
+  "main": "main.js",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jsdiff": "~2.1.3"
+  }
+}

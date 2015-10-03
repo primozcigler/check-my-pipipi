@@ -1,4 +1,4 @@
-/* global PI, webkitSpeechRecognition */
+/* global PI, webkitSpeechRecognition, JsDiff */
 
 /**
  * Check PI with the SpeechRecognition HTML5 API
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	(function () {
 		if (!('webkitSpeechRecognition' in window)) {
-			document.body.innerHTML = 'This app is working only in Chrome Browser (version 25 and newer).';
+			document.querySelector('.container').innerHTML = '<div class="text-center lead">This app is working only in Chrome Browser (version 25 and newer). But not on iOS devices (Win, Mac, Linux is fine).</div>';
 		}
 	}());
 
@@ -22,11 +22,31 @@ document.addEventListener('DOMContentLoaded', function () {
 		interimSpan = document.querySelector('#interimSpan');
 
 	// state
-	var speaking = false;
+	var settings = {
+		speaking:        false,
+		startCheckingAt: 0,
+	};
+
+	/**
+	 * Toggle speech recognition start/stop
+	 * Based on speaking state var.
+	 */
+	var toggleRecognition = function () {
+		if (settings.speaking) {
+			recognition.stop();
+		} else {
+			recognition.start();
+		}
+	};
 
 	// start/stop speech recognition
-	btn.onclick = function () {
-		speaking ? recognition.stop() : recognition.start();
+	btn.onclick = toggleRecognition;
+
+	// start/stop with spacebar
+	document.onkeydown = function (ev) {
+		if ( ev.keyCode === 32 ) {
+			toggleRecognition();
+		}
 	};
 
 	// recognition and settings
@@ -40,11 +60,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	/**
 	 * Results
-	 * @param  {[type]} event [description]
-	 * @return {[type]}       [description]
 	 */
 	recognition.onresult = function(event) {
-		console.log(event);
 		var interimTranscript = '';
 
 		for (var i = event.resultIndex; i < event.results.length; ++i) {
@@ -60,19 +77,30 @@ document.addEventListener('DOMContentLoaded', function () {
 		finalSpan.innerHTML   = finalTranscript;
 		interimSpan.innerHTML = interimTranscript;
 
-		checkPiFromStart(finalTranscript);
+		// start checking if it is not empty
+		if (finalTranscript.length > 0) {
+			checkPiFromPosition(settings.startCheckingAt, finalTranscript);
+		}
 	};
 
+	// start recognition
 	recognition.onstart = function () {
-		speaking        = true;
-		btn.innerHTML   = 'Click to stop';
-		finalTranscript = '';
-		document.body.style.backgroundColor = '';
+		var startAtElm = document.querySelector('#startAt');
+
+		settings.speaking        = true;
+		settings.startCheckingAt = startAtElm.value ? parseInt(startAtElm.value, 10)-1 : 0;
+
+		btn.innerHTML     = 'Click to stop';
+		finalTranscript   = '';
+
+		// set initial dots if not starting from start of PI
+		document.querySelector('#initialDecimals').innerHTML = settings.startCheckingAt > 0 ? '[first ' + settings.startCheckingAt + ' decimals]' : '';
 	};
 
+	// stop recognition
 	recognition.onend = function () {
-		speaking      = false;
-		btn.innerHTML = 'Click to start';
+		settings.speaking = false;
+		btn.innerHTML     = 'Click to start';
 	};
 
 
@@ -84,15 +112,32 @@ document.addEventListener('DOMContentLoaded', function () {
 	};
 
 	// check first N decimas of PI
-	var checkPiFromStart = function (input) {
-		var partialPi = PI.slice(0, input.length);
+	var checkPiFromPosition = function (pos, input) {
+		var partialPi = PI.substr(pos, input.length),
+			isOK = partialPi === input;
 
-		if ( partialPi === input ) {
-			document.body.style.backgroundColor = 'green';
+		finalSpan.classList.toggle('bg-success', isOK);
+
+		if (! isOK) {
+			var diff = JsDiff.diffChars(input, partialPi);
+
+			finalSpan.innerHTML = '';
+
+			diff.forEach(function(part){
+				// green for additions, red for deletions
+				// white for common parts
+				var color = part.added ? 'green' :
+					part.removed ? 'red' : '';
+				var span = document.createElement('span');
+
+				span.style.color = color;
+				span.innerText   = part.value;
+
+				finalSpan.appendChild(span);
+			});
 		}
-		else {
-			document.body.style.backgroundColor = 'red';
-		}
+
+		return isOK;
 	};
 
 });

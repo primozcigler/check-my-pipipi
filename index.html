@@ -2,20 +2,34 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Check My PIPIPI</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="src/bower_components/jsdiff/diff.min.js"></script>
 		<script src="pi-src.js"></script>
 		<script src="main.js"></script>
-		<style>
-			#interimSpan {
-				background-color: #aaa;
-			}
-		</style>
 	</head>
-	<body>
-		start speaking!
-		<button id="btn">Click to start</button>
-		<div id="transcript">
-			<span id="finalSpan"></span>
-			<span id="interimSpan"></span>
+	<body style="padding-top: 10px;">
+		<div class="container">
+			<div class="jumbotron">
+				<h1>Check My PIPIPI</h1>
+				<p>Checker for the PI number, using <a href="https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html">HTML5 SpeechRecognition</a> API.</p>
+			</div>
+			<p>Click on the button below and start speaking decimals of pi number. The only language supported now is <strong>Slovenian</strong>.</p>
+
+			<div class="form-inline">
+				<div class="form-group">
+					<label for="startAt">Start checking at decimal:</label>
+					<input id="startAt" type="number" class="form-control" min="1" max="10000" step="50" placeholder="500" value="1">
+				</div>
+				<button id="btn" class="btn btn-primary">Click to start</button> <br>
+			</div>
+
+			<br><br>
+
+			<div id="transcript" class="lead">
+				3.<span id="initialDecimals"></span><span id="finalSpan"></span>
+				<ins id="interimSpan"></ins>
+			</div>
 		</div>
 	</body>
 </html>
