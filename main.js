@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 		for (var i = event.resultIndex; i < event.results.length; ++i) {
 			if (event.results[i].isFinal) {
-				finalTranscript += checkPiFromPosition(settings.startCheckingAt, event.results[i][0].transcript);
+				finalTranscript += checkPiFromPosition((settings.startCheckingAt+finalTranscript.length), event.results[i][0].transcript);
 			} else {
 				interimTranscript += event.results[i][0].transcript;
 			}
@@ -122,18 +122,17 @@ document.addEventListener('DOMContentLoaded', function () {
 				// white for common parts
 				var color = part.added ? 'green' :
 					part.removed ? 'red' : false;
-				var span = document.createElement('span');
 
 				if (color) {
-					out.push(  )
+					out.push('<span style="color: ' + color + ';">' + part.value + '</span>');
 				} else {
-
+					out.push(part.value);
 				}
-
-				span.innerText   = part.value;
-
-				finalSpan.appendChild(span);
 			});
+
+			debugger;
+
+			return out.join('');
 		}
 
 	};
