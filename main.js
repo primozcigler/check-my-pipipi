@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	// dom elements
 	var btn = document.querySelector('#btn'),
+		langSel = document.querySelector('#lang'),
 		finalSpan   = document.querySelector('#finalSpan'),
 		interimSpan = document.querySelector('#interimSpan');
 
@@ -35,6 +36,10 @@ document.addEventListener('DOMContentLoaded', function () {
 		if (settings.speaking) {
 			recognition.stop();
 		} else {
+			// currently selected language
+			console.log(langSel.value);
+			recognition.lang = langSel.value;
+
 			recognition.start();
 		}
 	};
