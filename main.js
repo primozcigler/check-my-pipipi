@@ -37,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function () {
 			recognition.stop();
 		} else {
 			// currently selected language
-			console.log(langSel.value);
 			recognition.lang = langSel.value;
 
 			recognition.start();
